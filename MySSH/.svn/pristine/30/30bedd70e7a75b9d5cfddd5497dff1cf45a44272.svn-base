@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name></display-name>	
+  <!-- struts 配置 -->
+  
+  
+ <!-- 过滤器配置信息 -->
+ <filter>
+  <filter-name>SetCharacterEncodingFilter</filter-name>
+  <!-- 过滤器设置编码文件 -->
+  <filter-class>com.luol.filter.SetCharacterEncodingFilter </filter-class>
+  <init-param>
+    <!--    init-param元素定义了过滤器的初始化参数 -->
+   <description>给参数和值设置名称和编码类型</description>
+   <param-name>encode</param-name>
+   <param-value>GBK</param-value>
+  </init-param>
+  <init-param><!--初始化参数,指定是否忽略大小写 -->  
+     <param-name>ignore</param-name>  
+     <param-value>true</param-value> 
+  </init-param>
+  
+ </filter>
+
+ <filter-mapping>
+  <!-- filter-mapping告诉容器所有与模式向匹配的请求都应该允许通过访问控制过滤器。  所有以.do结尾的访问都先通过过滤器文件过滤 -->
+  <filter-name>SetCharacterEncodingFilter</filter-name>
+  <url-pattern>/MySSH/*</url-pattern>
+ </filter-mapping>
+
+ 
+<servlet> 
+<servlet-name>action</servlet-name>
+<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+<init-param>
+<param-name>config</param-name>
+<param-value>/WEB-INF/struts-config.xml</param-value>
+</init-param>
+</servlet>
+  <servlet-mapping>
+  <servlet-name>action</servlet-name>
+  <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  
+ <!-- 指定spring 配置文件，默认是从web跟目录开始寻找，通过spring提供的classpath：前缀指定从类路径下寻找 -->
+ <context-param>  
+ <param-name>contextConfigLocation</param-name>  
+<param-value>classpath:applicationContext.xml</param-value>  
+</context-param>  
+ <listener>  
+ 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>  
+ </listener>  
+ 
+ 
+ <!-- 对spring容器进行实例化 -->
+ <listener>
+   <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+ </listener>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

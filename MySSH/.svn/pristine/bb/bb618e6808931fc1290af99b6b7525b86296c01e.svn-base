@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+<!-- 测试bean -->
+
+<bean id ="testBean" class="Test.TestBean">
+<property name="name" value="zhangshan"></property>
+</bean>
+<!-- 配置一个数据源 -->
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" >
+	<!-- 配置数据库链接 -->
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+	<property name="url" value="jdbc:mysql://localhost:3306/user"></property>
+	<property name="username" value="root"></property>
+	<property name="password" value="root"></property>
+	<!-- 配置数据库链接池 -->
+	<!-- 连接池启动的初始值 -->
+	<property name="initialSize" value="3"></property>
+     <!-- 最大链接值 -->
+	<property name="maxActive" value="50"></property>
+	<!-- 最小空闲值 -->
+	<property name="minIdle" value="1"></property>
+	<!-- 最小空闲值 -->
+	<property name="maxIdle" value="2"></property>	
+</bean>
+
+<!-- 配置sessionFactory 会话工厂 -->
+<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+ <!-- 配置数据源 -->
+		  <property name="dataSource" ref="dataSource">
+		  </property>
+		  <!-- 接管hibernate中的映射文件 -->
+		  <property name="mappingResources" >
+		  <list>
+		     <value>luo/domin/employee.hbm.xml</value>
+		  </list> 
+		  </property>
+	      <property name="hibernateProperties">
+	          <value>
+	     		 hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+	     		 hibernate.hbm2ddl.auto=update
+	     		 hibernate.show_sql=true
+	     		 hibernate.format_sql=true
+	          </value>
+	      </property>
+</bean>
+<bean id="employeeServiceImp" class="com.luo.service.imp.EmployeeService">
+   <property name="session" ref="sessionFactory"></property>
+</bean>
+<!-- 配置事物管理器，同一管理session资源 -->
+<bean id="TxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+      <property name="sessionFactory" ref="sessionFactory"></property>
+</bean>
+
+<!-- 启动事物注解 -->
+<tx:annotation-driven transaction-manager="TxManager"/>
+
+
+
+</beans>
